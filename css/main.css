@@ -1,0 +1,44 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+body {
+	padding-top: 50px;
+	padding-bottom: 20px;
+}
+.btn{
+	margin-right:10px;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table, td, th {
+	border: 1px solid grey;
+	padding:5px;
+}
+
+td img{
+	margin:5px;
+}
+
+table div{
+	display:inline;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Darren Williams ATWD Assignment</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="index.html">Advanced Topics in Web Development</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+	<h1>Chess World Champions (1886-2013)</h1>
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-lg-12">
+          <h2>1. Data Modelling and Schema Design</h2>
+          <p><em>1.1 Construct an appropriate ER model implemented as MySQL tables and write a server side script (PHP or the language of your choice) to map the example data to the tables.</em></p>
+		   <p><img src="img/ER_Model.png" alt="ER Model" /></p>
+       <p><a class="btn btn-default" href="http://www.cems.uwe.ac.uk/~p-chatterjee/2014-15/modules/atwd1/assignment/chess_world_champions.html" target="_blank">Original Source &raquo;</a>
+          <a class="btn btn-default" href="populate_db.php" target="_blank">populate_db.php &raquo;</a><a class="btn btn-default" href="phps/populate_db.phps" target="_blank">populate_db.phps &raquo;</a><a class="btn btn-default" href="phps/functions.phps" target="_blank">functions.phps &raquo;</a></p>
+		  <p><em>1.2 Map the data to a XML file and construct an appropriate XSD schema to validate the instance document. (Use a PHP script to show the validation)</em> </p>
+          <p><a class="btn btn-default" href="phps/config.phps" target="_blank">config.phps &raquo;</a> <a class="btn btn-default" href="phps/output.phps" target="_blank">output.phps &raquo;</a><a class="btn btn-default" href="output.php?data=xml" target="_blank">XML &raquo;</a><a class="btn btn-default" href="players.xsd" target="_blank">XSD &raquo;</a><a class="btn btn-default" href="validate_xml.php" target="_blank">validate_xml.php &raquo;</a><a class="btn btn-default" href="phps/validate_xml.phps" target="_blank">validate_xml.phps &raquo;</a></p>
+        </div>
+        <div class="col-lg-12">
+          <h2>2. Representation, Transformation and Rendering</h2>
+          <p><em>Use the microdata schema specifications at schema.org to mark-up the data.</em></p>
+          <p> <a class="btn btn-default" href="output.php">Standard Table &raquo;</a><a class="btn btn-default" href="output.php?data=md">Microdata &raquo;</a></p>
+		  <p><em>2.2 Design and write a server-side script to generate RDFa & JSON-LD representations.</em></p>
+          <p><a class="btn btn-default" href="output.php?data=rdfa">RDFa &raquo;</a>
+        <a class="btn btn-default" href="output.php?data=jsonld" target="_blank">JSON-LD &raquo;</a></p>
+        <p><strong>N.B. All four representations are rendered by output.php</strong></p>
+       </div>
+        <div class="col-lg-12">
+          <h2>Documentation & Reflection</h2>
+          <p><em>You should post a short HTML report (max 500 words) outlining your personal learning outcomes and the problems encountered and how you solved them.</em></p>
+		  <p>I began by mapping the example data to my database by using the simple HTML dom parser, this allowed me to easily scrape the HTML from the source page, I then wrote a foreach loop to traverse through each <code>&#60;td&#62;</code> and whilst working through each of the elements I immediately encountered issues where there were irregular patterns in the table data. The first issue was the date entry, I wanted to split the dates by their <code> &#60;br/&#62; </code> tags and then run them through a function to separate the start year, end year and notes, but the source code showed that some were split with a <code>&#60;br&#62; </code> and others with a <code> &#60;br/&#62; </code>. As a result I had to split the dates using the following regular expression <code>$dates = preg_split('/&#60;br[^&#62;]*&#62;/i', $td[1]->innertext);</code>. There were also issues with the hyphen that split the years, some were different to others so I resolved this by replacing all the smaller hyphens with large using <code>str_replace('–','-',$td[1]->innertext));</code></p>
+		  <p>The next issue arose when I came to pull out the multiple countries, their links and any flags associated with them. I had to write a conditional statement to check if there were other flag images or country links present and another conditional statement to check the previous name id against the current one, this prevented duplicate entries and allowed me to assign the associated data to the correct player name. At each key stage I would insert the data into the database using functions I'd written for each table.</p>
+		  <p>At this point I noticed the ids' of the player and country tables were not auto-incrementing correctly and some numbers were being skipped. I soon discovered that this was due to me using the <code>IGNORE</code> keyword in my SQL query, I used this keyword to ignore duplicate entries but the id would still increment even though nothing was inserted into the database. I overcome this issues writing a conditional statement to check if an entry with the same name was present, if it wasn't then the insert query would execute, else the function would return the user id of the existing entry that would be used in the insertfk() function along with the relating country id.</p>
+      <p>When I came to creating the representations I found I had issues getting the JSON-LD code to validate, this was due to never having used JSON-LD up to this point. I spent some time reading examples online to allow me to build a better understanding of how to structure the JSON-LD context, I was then able to validate my code. I also found that when it came to validating my RDFa and MD that some validators would throw warnings where others would overlook these, I soon discovered that if I wrapped the item in a div instead of a span would achieve the correct output and would not get any errors. To allow for navigation through the representations I created an output file to GET the URL query string, then output the correct representation depending on it's value. I finished by tidying up my code an annotating where appropriate. [515 words]</p>
+		  
+      <h2>Links to all PHPS files, Tools & References</h2>
+      <h3>PHPS files</h3>
+      <!--PHPS files-->
+      <p><a class="btn btn-default" href="phps/config.phps" target="_blank">config.phps &raquo;</a>
+      <a class="btn btn-default" href="phps/functions.phps" target="_blank">functions.phps &raquo;</a>
+      <a class="btn btn-default" href="phps/populate_db.phps" target="_blank">populate_db.phps &raquo;</a>
+      <a class="btn btn-default" href="phps/output.phps" target="_blank">output.phps &raquo;</a>
+      <a class="btn btn-default" href="phps/header.phps" target="_blank">header.phps &raquo;</a>
+      <a class="btn btn-default" href="phps/footer.phps" target="_blank">footer.phps &raquo;</a>
+		  <a class="btn btn-default" href="phps/validate_xml.phps" target="_blank">validate_xml.phps &raquo;</a></p>
+      <h3>Links</h3>
+      <!--Links-->
+		  <p><a href="http://php.net/manual/en/domdocument.schemavalidate.php" title="schemavalidate" target="_blank">http://php.net/manual/en/domdocument.schemavalidate.php</a></p><p><a href="http://simplehtmldom.sourceforge.net/" title="simplehtmldom" target="_blank">http://simplehtmldom.sourceforge.net/</a></p>
+		  <p><a href="http://www.w3.org/TR/xmlschema-0/" title="simplehtmldom" target="_blank">http://www.w3.org/TR/xmlschema-0/</a></p>
+		  <p><a href="http://www.w3.org/TR/json-ld/" title="json-ld" target="_blank">http://www.w3.org/TR/json-ld/</a></p>
+		  <p><a href="http://www.google.com/webmasters/tools/richsnippets" title="json-ld" target="_blank">http://www.google.com/webmasters/tools/richsnippets</a></p>
+      <p><a href="http://linter.structured-data.org/" title="linter" target="_blank">http://linter.structured-data.org/</a></p>
+      <p><a href="http://rdfa.info/play/" title="rdfa.info" target="_blank">http://rdfa.info/play/</a></p>
+      <p><a href="http://webmaster.yandex.com/microtest.xml" title="microtest" target="_blank">http://webmaster.yandex.com/microtest.xml</a></p>
+      <p><a href="http://json-ld.org/playground/index.html" title="json-ld.org" target="_blank">http://json-ld.org/playground/index.html</a></p>
+      <p><a href="https://www.google.com/webmasters/markup-tester/" title="markup-tester" target="_blank">https://www.google.com/webmasters/markup-tester/</a></p><p><a href="http://www.freeformatter.com/xsd-generator.html" title="xsd-generator" target="_blank">http://www.freeformatter.com/xsd-generator.html</a></p>
+
+        </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>12039763 Darren Williams</p>
+      </footer>
+    </div> <!-- /container -->    
+
+
+    </body>
+</html>
